@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Draw</title>
+    </head>
+    <body style = "margin: 0;">
+       <div id="menu">
+          <h1>Draw!</h1>
+           <div id="start">
+               <h2> Start</h2>
+           </div>
+           <div id="info">
+               <h2> Info</h2>
+           </div>
+       </div>
+       <div id="infoPage">
+           <h1>Draw!</h1>
+            <h3>Created by @KeS334</h3>
+            <h3>Last Changes 24.06.2018</h3>
+            <h4 id="backM_1">Back to Menu</h4> 
+       </div>
+       <div id="draw">
+            <canvas id="canvas" style="display: block; border-bottom: 3px solid black; " >U browser is not supported D:</canvas>
+            <div class="buttonPanel">
+            <div class= "buttonC" style = "background:red;" id="red">
+            </div>
+            <div class="buttonC" style= "background:green;" id="green">
+            </div>
+            <div class="buttonC" style= "background:yellow;" id="yellow">
+            </div>
+            <div class="buttonC" style= "background:orange;" id="orange">
+            </div>
+            <div class="buttonC" style= "background:blue;" id="blue">
+            </div>
+            <div class="buttonC" style= "background:brown;" id="brown">
+            </div>
+            <div class="buttonC" style= "background:black;" id="black">
+            </div>
+            <div class="buttonC" style= "background:white;" id="white">
+            </div>
+            </div>
+            <div id="buttonPanel_2">
+                <div class="buttonK" id='backM_2'>
+                    <p>Menu</p>
+                </div>
+                <div class="buttonK" id='k1'>
+                    <p>Clear</p>
+                </div>
+                <div class="buttonK" id='k2'>
+                    <p>Save</p>
+                </div>
+                <div class="buttonK" id='k3'>
+                    <p>Replay</p>
+                </div>
+            </div>
+        </div>    
+    <style>
+        #menu{
+            position: absolute;
+            width: 100%;
+            height:100%; 
+            top: 0px;
+            z-index: 20;
+            background: white;
+        }
+        #draw{
+             position: absolute;
+            width: 100%;
+            height:100%; 
+            top: 0px;
+            z-index: 10;
+        }
+        #infoPage{
+            position: absolute;
+            width: 100%;
+            height:100%; 
+            top: 0px;
+            z-index: 30;
+            display: none;
+        }
+            .buttonC{
+                height:40px;
+                width:40px;
+                border: 2px solid black;
+                border-radius: 5px;
+                margin: 5px;
+            }
+            .buttonC p{
+                margin: auto;
+                text-align: center;
+            }
+            .buttonPanel{
+                display: flex;
+                justify-content: space-around;
+                margin-top: 20px;
+            }
+            h2{
+                border: 2px solid black;
+                width: 80%;
+                margin:20px auto;
+                border-radius: 3px;
+                max-width: 320px;
+                text-align: center;
+            }
+                h1, h3, h4{
+                    text-align: center;
+            }
+        #buttonPanel_2{
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+            .buttonK{
+               border: 2px solid black;
+                width: 20%;
+                
+                border-radius: 3px;
+                text-align: center; 
+            }
+        .buttonK p{
+            margin: 5px;
+        }
+    </style>
+    
+    
+    <script>
+            var 
+                canv    = document.getElementById('canvas'),
+                ctx     = canv.getContext('2d'),
+                isMouseDown = false;
+                coords = [];
+            
+            canv.width = window.innerWidth;
+            canv.height = window.innerHeight*0.75;
+            
+            ///
+            
+            canv.addEventListener('mousedown', function(){
+                isMouseDown = true;
+            });
+            
+            canv.addEventListener('mouseup', function(){
+                isMouseDown = false;
+                ctx.beginPath();
+                coords.push('mouseup');
+            });
+        
+        var radius = 5;
+        var speed = 5;
+        
+            ctx.lineWidth = radius * 2;
+            canv.addEventListener('mousemove', function(e){
+                if (isMouseDown)
+                    {
+                
+                        
+                        console.log(ctx.fillStyle);
+                        coords.push([e.clientX, e.clientY]);
+                        
+                        ctx.lineTo(e.clientX, e.clientY);
+                        ctx.stroke();
+                        
+                        ctx.beginPath();
+                        ctx.arc(e.clientX, e.clientY, radius, 0, Math.PI *2);
+                        ctx.fill();
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(e.clientX, e.clientY);
+                        
+                    }
+            });
+            function save()
+            {
+                localStorage.setItem('coords', JSON.stringify(coords));
+            }
+            function clear(){
+                
+                //ctx.fillStyle = 'white';
+                //ctx.fillRect(0,0,canv.width, canv.height);
+                ctx.clearRect(0,0,canv.width,canv.height);
+
+                //ctx.beginPath();
+                //ctx.fillStyle = 'black';
+            }
+            function replay(){
+                var 
+                timer = setInterval(function(){
+                    if (!coords.length){
+                        clearInterval(timer);
+                        ctx.beginPath();
+                        return;
+                    }
+                    /*if (coords[0] == 'red'){
+                        ctx.fillStyle = 'red';
+                        ctx.strokeStyle = 'red'; 
+                    }
+                     if (coords[0] == 'black'){
+                        ctx.fillStyle = 'black';
+                        ctx.strokeStyle = 'black'; 
+                    }*/
+                     if ((coords[0] == 'red')||(coords[0] == 'green')||(coords[0] == 'yellow')||(coords[0] == 'orange')||(coords[0] == 'blue')||(coords[0] == 'brown')||(coords[0] == 'black')||(coords[0] == 'white')){
+                        ctx.fillStyle = coords[0];
+                        ctx.strokeStyle = coords[0]; 
+                    }
+                    
+                    var crd = coords.shift(),
+                    e = {
+                        clientX: crd["0"],
+                        clientY: crd["1"]
+                    };    
+                    ctx.lineTo(e.clientX, e.clientY);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.arc(e.clientX, e.clientY, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(e.clientX, e.clientY);
+                }, 100/speed)
+            }
+        
+    document.addEventListener('keydown', function(e){
+        //console.log(e.keyCode);
+        
+        if (e.keyCode == 83){
+            save();
+        }
+        if (e.keyCode == 82)
+            {
+            coords = JSON.parse(localStorage.getItem('coords'));
+            clear();
+            replay();    
+            }
+        if (e.keyCode == 67){
+            
+        
+            clear();
+        }
+    }) ;   
+            
+        document.getElementById('red').addEventListener('click', function(){
+            console.log('red');
+                   ctx.fillStyle = 'red';
+                   ctx.strokeStyle = 'red'; 
+                coords.push('red');
+            }); 
+        document.getElementById('green').addEventListener('click', function(){
+            console.log('green');
+                   ctx.fillStyle = 'green';
+                   ctx.strokeStyle = 'green';                 coords.push('green');  
+            }); 
+         document.getElementById('yellow').addEventListener('click', function(){
+            console.log('yellow');
+                   ctx.fillStyle = 'yellow';
+                   ctx.strokeStyle = 'yellow';                 coords.push('yellow');  
+            }); 
+         document.getElementById('orange').addEventListener('click', function(){
+            console.log('orange');
+                   ctx.fillStyle = 'orange';
+                   ctx.strokeStyle = 'orange';                 coords.push('orange');  
+            }); 
+         document.getElementById('blue').addEventListener('click', function(){
+            console.log('blue');
+                   ctx.fillStyle = 'blue';
+                   ctx.strokeStyle = 'blue';                 coords.push('blue');  
+            }); 
+         document.getElementById('brown').addEventListener('click', function(){
+            console.log('brown');
+                   ctx.fillStyle = 'brown';
+                   ctx.strokeStyle = 'brown';                 coords.push('brown');  
+            }); 
+         document.getElementById('black').addEventListener('click', function(){
+            console.log('black');
+                   ctx.fillStyle = 'black';
+                   ctx.strokeStyle = 'black';                 coords.push('black');  
+            }); 
+         document.getElementById('white').addEventListener('click', function(){
+            console.log('white');
+                   ctx.fillStyle = 'white';
+                   ctx.strokeStyle = 'white';                 coords.push('white');  
+            }); 
+        
+         
+        
+        
+        document.getElementById('start').addEventListener('click', function(){
+            document.getElementById('menu').style.display = "none";
+            document.getElementById('infoPage').style.display = "none";
+            document.getElementById('draw').style.display = "block";});
+        
+        document.getElementById('info').addEventListener('click', function(){
+            document.getElementById('menu').style.display = "none";
+            document.getElementById('draw').style.display = "none";
+            document.getElementById('infoPage').style.display = "block";});
+        
+         document.getElementById('backM_1').addEventListener('click', function(){
+            document.getElementById('infoPage').style.display = "none";
+            document.getElementById('menu').style.display = "block";});
+        
+         document.getElementById('backM_2').addEventListener('click', function(){
+            document.getElementById('menu').style.display = "block";});
+        
+         document.getElementById('k1').addEventListener('click', function(){
+             clear();});
+        document.getElementById('k2').addEventListener('click', function(){
+             save();});
+        document.getElementById('k3').addEventListener('click', function(){
+             coords = JSON.parse(localStorage.getItem('coords'));
+            clear();
+            replay(); 
+        });
+        
+        </script>       
+    </body>
+</html>
